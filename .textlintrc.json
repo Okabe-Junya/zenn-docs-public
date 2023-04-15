@@ -1,0 +1,11 @@
+{
+    "plugins": ["@textlint/markdown"],
+    "rules": {
+      "preset-japanese": {
+        "max-ten": {
+          "touten": "，",
+          "kuten": "．"
+        }
+      }
+    }
+  }
