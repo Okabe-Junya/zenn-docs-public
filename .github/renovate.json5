@@ -1,6 +1,73 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+
+  // General configuration
   "extends": [
-    "config:base"
-  ]
+    "config:base",
+    ":timezone(Asia/Tokyo)",
+    ":prHourlyLimitNone",
+    ":automergePatch",
+    ":automergeMinor"
+  ],
+
+  "schedule": ["after 3am and before 9am every weekday"],
+
+  "labels": ["dependencies", "renovate"],
+
+  "dependencyDashboard": true,
+
+  "enabledManagers": [
+    "npm"
+  ],
+
+  "packageRules": [
+    {
+      "matchUpdateTypes": ["pin"],
+      "addLabels": ["pin"]
+    },
+    {
+      "matchUpdateTypes": ["major"],
+      "addLabels": ["major"]
+    },
+    {
+      "matchUpdateTypes": ["minor"],
+      "addLabels": ["minor"]
+    },
+    {
+      "matchUpdateTypes": ["patch"],
+      "addLabels": ["patch"],
+      "automerge": true
+    },
+    {
+      "matchDepTypes":[
+        "dependencies",
+        "devDependencies"
+      ],
+      "automerge": true
+    }
+  ],
+
+  // Specific npm configuration
+  "npm": {
+    "fileMatch": [
+      "(^|/)package\\.json$"
+    ],
+    "versioning": "npm",
+    "digest": {
+      "prBodyDefinitions": {
+        "Change": "{{#if displayFrom}}`{{{displayFrom}}}` -> {{else}}{{#if currentValue}}`{{{currentValue}}}` -> {{/if}}{{/if}}{{#if displayTo}}`{{{displayTo}}}`{{else}}`{{{newValue}}}`{{/if}}"
+      }
+    },
+    "prBodyDefinitions": {
+      "Change": "[{{#if displayFrom}}`{{{displayFrom}}}` -> {{else}}{{#if currentValue}}`{{{currentValue}}}` -> {{/if}}{{/if}}{{#if displayTo}}`{{{displayTo}}}`{{else}}`{{{newValue}}}`{{/if}}]({{#if depName}}https://renovatebot.com/diffs/npm/{{replace '/' '%2f' depName}}/{{{currentVersion}}}/{{{newVersion}}}{{/if}})"
+    },
+    "ignoreDeps": [
+      "eslint",
+      "eslint-config-prettier",
+      "eslint-plugin-prettier",
+      "prettier"
+    ],
+    "ignoreUnstable": true
+  }
+
 }
