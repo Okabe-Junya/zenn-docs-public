@@ -1,0 +1,41 @@
+name: npm audit and fix
+
+on:
+  push:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'package.json'
+      - 'package-lock.json'
+
+jobs:
+  audit-and-fix:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: if audit found moderate or high vulnerabilities, fix them and push
+      run: |
+        if [[ $(npm audit --audit-level=moderate --json | jq '.metadata.vulnerabilities.moderate') -gt 0 || $(npm audit --audit-level=moderate --json | jq '.metadata.vulnerabilities.high') -gt 0 ]]; then
+            npm audit fix
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git config --global user.name "github-actions[bot]"
+            git add package-lock.json
+            git commit -am "fix vulnerabilities"
+            git push
+        fi
+

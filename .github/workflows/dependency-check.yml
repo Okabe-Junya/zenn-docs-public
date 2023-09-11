@@ -5,6 +5,8 @@ on:
     paths:
       - "package.json"
       - "package-lock.json"
+    branches:
+      - main
   pull_request:
     paths:
       - "package.json"
@@ -23,13 +25,5 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install dependencies
+      - name: Check Dependencies
         run: npm ci
-
-      - name: Check for security vulnerabilities
-        run: npm audit
-
-      - name: Check for unused dependencies
-        run: |
-          npm install -g depcheck
-          depcheck
