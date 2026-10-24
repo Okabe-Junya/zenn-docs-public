@@ -37,13 +37,7 @@ jobs:
 
       # Install dependencies
       - name: Install dependencies
-        run: "npm install --save-dev textlint textlint-rule-preset-japanese @textlint/textlint-plugin-markdown"
-
-      # Setup Python
-      - name: Setup Python
-        uses: actions/setup-python@v3
-        with:
-          python-version: 3.9
+        run: npm ci
 
       # Install reviewdog
       - name: Setup reviewdog
